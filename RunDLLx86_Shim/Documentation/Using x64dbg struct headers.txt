@@ -1,0 +1,19 @@
+1. To use the struct headers created for this project, load x64dbg (32-bit version)
+2. Open the dll
+3. In the bottom window select the Struct tab
+4. Right-click and select the "Parse header" menu option from the pop-up menu
+5. Browse to and select the header files
+6. Click ok in the File Open dialog box
+7. Next locate the address, that marks the beginning of a type specified in one of the header files loaded, in the dump tab
+8. Right click on the address, on the left side of that pane and select Copy | Address from the pop-up menu
+9. Select the Struct tab in that pane again
+10. Right-click and select "Visit type" from the pop-up menu
+11. Type in the name of the structure
+12. Click ok (or hit enter)
+12. In the next pop-up dialog, right-click in the text field and click paste or hit ctrl+v
+13. Click ok (or hit enter)
+
+Enjoy!
+
+14?. Do steps 7-13 for each instance of the struct that you want to be able to view more easily
+ 

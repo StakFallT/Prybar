@@ -1,0 +1,95 @@
+03/27/2019
+--------------------------------------
+	+ Begun modifying StrMap code to be polymorphic in its ability to add elements. StrMap_Add will (soon to be) checking the contents of the address passed in it is
+	   a StrMap_Raw instance or a StrMap_Element and will perform the neccessary operations as such.
+		For example:
+			If a pointer to a StrMap_Raw instance was passed into the function
+				Call StrMap_Initial_Set (despite StrMap_Create creating an initial element, this is where that is handled! Calling StrMap_Initial_Set will set the first StrMap_Element)
+					1. Create an element
+					2. Update the StrMap_Raw fields
+					3. Finally set the element's element member
+
+			If a pointer to an StrMap_Element instance was passed into the function
+				Call StrMap_Add_Element	(essentially, the old StrMap_Add contents)
+					1. Create the new element
+						1a. Get the address value pointed to by the tail element of the StrMap_Raw instance
+						1b. Overwrite the address value pointed to by the tail element of the StrMap_Raw instance to be the address of the newly created StrMap_Element
+						1c. Get the address value pointed to by the (old) tail's Next member
+						1d. Overwrite the address value pointed to by the Next member in the (old) StrMap_Element's (the old tail) Next member 
+						1e. Set the address value pointed to by the (new) StrMap_Element's Prev member to that of the (old) tail 
+
+					2. Update the fields
+						2a. Update the StrMap_Raw Tail and Length fields
+						2b. Update the (current) tail's Next field, and then finally set the new element's element member)
+
+		Implementation of the polymorphic code works (relies) on MemberOfffset-Equivalences. Both StrMap_Raw and StrMap_Element have a first member called Type. This
+		member is meant to be	safely assumed. Checking the value (call StrMap_Get_Type) of this member should return either STRMAP_RAW or STRMAP_ELEMENT. This means
+		registers can contain addresses of either of those types and dynamically passed into a function, and that function will behave accordingly.
+ 
+
+		Functions that will be added:
+			StrMap_Set_Type
+			StrMap_Get_Type
+
+			StrMap_Initial_Set
+			StrMap_Add_Element
+
+03/22/2019
+--------------------------------------
+	+ Reorganized the FileSystem library, it closer matches the StrMap layout and filenaming conventions
+
+03/20/2019
+--------------------------------------
+	+ Added file that has functions that demonstrate usage, and test functionality of StrMap functions.
+	+ Began work on creating FileManager
+	+ Created FileManager class and function stubs
+	+ Created File class and function stubs
+	+ Added FileManager_Doc.txt
+	+ Added FileManager.h and File.h for easier debugging in x64dbg
+
+03/19/2019
+--------------------------------------
+	+ Tested a bunch more functions. The following functions appear to be working perfectly:
+		StrMap_Element_Get_Element
+		StrMap_Element_Get_Next
+		StrMap_Element_Set_Name
+          	StrMap_Element_Get_Prev
+          	StrMap_Element_Get_ByIndex
+          	StrMap_Element_Get_ByIndex
+          	StrMap_Element_Get
+          	StrMap_Element_Get
+
+		NOTE: Deleteing elements is still unimplemented but will be soon as it will most likely be -partially- based on
+	   		the code for adding in that it will probably reuse some of the updating of the previous and next elements.
+
+		NOTE: Some ptr-prefixed functions for Map_Element and Map_Raw may or may not all be tested. This is a todo item 
+
+	+ Added more code that performs a small test demonstrating the usage of the above functions
+
+	+ StrMap code should be pretty close to, if not, usuable (minus the inability at the moment to remove elements)
+
+03/18/2019
+--------------------------------------
+	+ Debugged StrMap_Raw_Increse_Length and StrMap_Raw_Decrese_Length
+	+ Added StrMap_Element_Increase_Length and StrMap_Element_Decrease_Length
+
+03/15/2019
+--------------------------------------
+	+ Added beginnings of x64dbg type headers so memory locations of those types can be viewed MUCH more easily (only 32-bit x64dbg headers are present currently but will be added)
+	+ Added instructions in how to load and use the struct headers in x64dbg
+
+	StrMap_Raw
+	--------------------
+		+ Added StrMap_Raw_Increase_Length
+		+ Added StrMap_Raw_Decrease_Length
+		+ Added StrMap_Raw_Set_LengthValue
+
+
+
+Running TODO:
+--------------------------------------
+Added 03/19/2019:
+	- Implement deleting of elements -- start by reusing some of the StrMap_Element_Add code for updating the previous and next elements as a starting base.
+	- Verify that all Map_Element and Map_Raw ptr-prefixed functions work as expected.
+	- Implement a way of deep-deleting / deep-free'ing of StrMap elements (i.e. a function that takes in a pointer to another function to perform free'ing up of the memory of the StrMap_Element's element member)
+	  In other words, a user specifies a destructor to be called when the StrMap_Element is free'ed and the StrMap_Element function calls that specified destructor before free'ing itself.   

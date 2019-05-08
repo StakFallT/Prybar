@@ -1,0 +1,75 @@
+;Characteristics			dd	?
+;TimeDateStamp				dd	?
+;MajorVersion				dw	?
+;MinorVersion				dw	?
+;Name						dd	?
+;Base						dd	?
+;NumberOfFunctions			dd	?
+;NumberOfNames				dd	?	; Array of DWORDs   	name_ordinal[0], name_ordinal[1], etc...
+;AddressOfFunctions			dd	?	; Indexed by Ordinals	address_of_function[0], address_of_function[1], etc...		--> Code/Data
+;AddressOfNames				dd	?	; Pointer to strings 	address_of_name[0], address_of_name[1], etc...
+;AddressOfNameOrdinals		dd	?
+
+
+
+; strMap_Raw
+	;	.rawHead	(technically $)
+	;	.rawTail	($+4)
+	;	.rawLength	($+8)
+	;	.rawHeap	($+12)
+
+		; StrMap_Element
+		;	[ .map_Raw 	--------------------]------------->	[ .rawHead	 ]
+		;	[ .Head		(technically $+4)	|				| .rawTail	 |
+		;	[ .Name		($+8)				|				| .rawLength |
+		;	[ .Element	($+12)				|				[ .rawHeap	 ]
+		;	[ 								|
+		;	[ .Tail		($+16)				|
+		;	[								|
+		;	[ .Prev		($+20)				|
+		;	[ .Next		($+24)				|
+		;	[								|
+		;	[ .Length	($+28)				]
+
+
+; StrMap_Raw offsets
+	strMap_Raw_Offset_Head		dd 0
+	strMap_Raw_Offset_Tail		dd 4
+	strMap_Raw_Offset_Length	dd 8
+	strMap_Raw_Offset_Heap		dd 12
+
+ StrMap_Element offsets
+	;strMap_Element_Offset_map_Raw		equ 0
+	;strMap_Element_Offset_Head			equ 4
+	;strMap_Element_Offset_Name			equ 8
+	;strMap_Element_Offset_Element		equ 12
+	;strMap_Element_Offset_Tail			equ 16
+	;strMap_Element_Offset_Prev			equ 20
+	;strMap_Element_Offset_Next			equ 24
+	;strMap_Element_Offset_Length		equ 28
+
+
+%: Indicates 1 or more conditions that need error checking
+
+Add operation:
+	<Initialize members>
+		New_StrMapElement.map_Raw 	= ???	(for now, next initializes to 0)
+
+		(This could be done later, but categorically should be placed here)
+			Get the element's (passed in to procedure) map_Raw address being pointed to
+			Set the New element's map_Raw value to address so it points to the map_Raw
+
+		New_StrMapElement.Head 		= Value stored in map_Raw's Head member
+		New_StrMapElement.Tail 		= Value stored in map_Raw's Tail member
+		New_StrMapElement.Prev 		= ???	(for now, next initializes to 0)
+		New_StrMapElement.Next 		= ???	(for now, next initializes to 0)
+
+
+	; Perform the sub-tasks necessary to perform the addition operation
+		Temp 					= map_Raw.rawTail
+		Temp.next 				= New_StrMapElement		(rawTail.Next = New_StrMapElement)
+		New_StrMapElement.prev 	= Temp 					(New_StrMapElement.prev = map_Raw.[rawTail])
+		map_Raw.rawTail 		= New_StrMapElement
+
+	; Finally increase length by one
+		map_Raw.[Length] += 1

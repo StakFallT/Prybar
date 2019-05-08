@@ -1,0 +1,11 @@
+[Version]
+Version=3000
+[Project]
+Assembler=Fasm
+Path=F:\Fasm\Projects\RunDLLx64_Shim
+Group=2,-1,0,1,RunDLLx64_Shim,-2,-1,1,Assembly,-3,-1,1,Include,-4,-1,1,Misc,-5,-1,1,Resource
+F1=-2,2,1,22,22,600,400,0,RunDLLx64_Shim.asm
+F2=-3,0,1,44,44,600,400,0,RunDLLx64_Shim.inc
+[Make]
+Make=0
+0=Window no link,'/r "$R"',"$R.res",'"$C"',"$C.exe",'',,'',

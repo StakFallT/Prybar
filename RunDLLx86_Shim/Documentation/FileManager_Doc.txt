@@ -1,0 +1,42 @@
+class FileManager::
+-------------------------------
+	Functions:
+		FileManager_Create
+
+		FileManager_Open_File
+		FileManager_Close_File_ByIndex
+		FileManager_Close_File_ByUID
+
+		FileManager_Get_File_ByIndex
+		FileManager_Get_File_ByUID
+		FileManager_Get_FileOpen_Count
+
+		FileManager_Set_FileOpen_Count
+		FileManager_Increase_FileOpen_Count
+		FileManager_Decrease_FileOpen_Count
+
+	Members:
+		Files
+		FilesOpen_Count
+		Heap
+
+class File::
+-------------------------------
+	Functions:
+		File_Get_UID
+		File_Get_Name
+		File_Get_Path
+		File_Get_Filename
+		File_Get_hFileHandle
+
+		File_Set_UID
+		File_Set_Name
+		File_Set_Path
+		File_Set_Filename
+		File_Set_hFileHandle
+
+	Members:
+		UID
+		Path
+		Filename
+		hFileHandle
