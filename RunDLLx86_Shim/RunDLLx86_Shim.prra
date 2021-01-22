@@ -1,18 +1,82 @@
 [Version]
 Version=3000
+[Environment]
+0=path,$A\..\Fasm;$A\..\Ollydbg
+1=include,$A\..\Fasm\INCLUDE
+2=ExtDebug,C:\x64dbg\release\x32\x32dbg.exe
+3=Debugger,C:\x64dbg\release\x32\x32dbg.exe
+[CharTab]
+2=0251222522222232;20-2F
+3=1111111111242221;30-3F
+[File]
+0="Assembly (*.asm,*.inc)|*.asm;*.inc"
+1="Resource Files (*.rc)|*.rc"
+2="Text Files (*.txt)|*.txt"
+3="All Files (*.*)|*.*"
+;Filebrowser,Projectbrowser,Tabtool
+Type=.asm.,.inc.,.rc.,.txt.ini.def.,.exe.,.bat.
+;Filebrowser filter
+Filter=1,.asm.inc.rc.txt.ini.def.exe.bat.prra.
+;Open filetypes
+Code=.asm.inc.
+Text=.txt.ini.
+Hex=.obj.res.bmp.ico.cur.
+;Attempt to add API's pulled in from .api files so they can be overridden with custom fonts, font
+;sizes, font styles, and colors. Didn't work though.
+;Api=.api.
+Resource=.rc.
+TplTxt=.prra.asm.inc.rc.txt.ini.def.bat.
+TplBin=.exe.dll.lib.obj.res.bmp.ico.cur.
+[Parse]
+Assembler=3
+Def=,,;,'",\
+Ignore=1,format,1,include,1,invoke
+Type=Code,Label,Const,Data,Struct
+Code=3,1,p,proc,4,2,p,endp
+Local=3,11,l,local
+Label=1,28,l,:
+Const=1,5,c,=,1,5,c,equ
+Data=1,3,d,db,1,3,d,dw,1,3,d,dd,1,3,d,dq,1,3,d,dt
+Struct=3,7,s,struct,3,7,s,union,4,7,s,struct,4,7,s,union,4,8,s,ends
+[CodeComplete]
+Trig=invoke
+Inc=include,''
+Lib=
+Api=winasmApi.api,winasmConst.api,winasmStruct.api,winasmMsg.api,winfasmWord.api
+[CodeBlock]
+Cmnt=
+0=proc $,endp,,,14
+1=if,endif,elseif,else,0
+2=virtual,end virtual,,,14
+3=macro $,},,,6
+4=? struct|? union,? ends,,,0
+5=section,,,,16
+[Edit]
+BraceMatch=({[,)}],\,
+Option=4,179
+[Resource]
+Option=3,3,8404992,86,0,rsrc.inc,2,%name %id
+[Make]
+Make=0
+0=Window no link,'/r "$R"',"$R.res",'"$C"',"$C.exe",'',,'',
+Delete=0
+IncBuild=0
+Run=0,'Cmd /k',''
 [Project]
 Assembler=Fasm
-Path=F:\Fasm\Projects\RunDLLx86_Shim
+Path=Z:\home\stakfallt\GitHub\Prybar\RunDLLx86_Shim
+Code=.asm
+Header=.inc
 Group=2,-1,0,1,RunDLLx86_Shim,-2,-1,1,Assembly,-3,-1,1,Include,-4,-1,1,Misc,-5,-1,1,Resource
-F1=-2,0,1,-10,-32,1445,757,224,RunDLLx86_Shim.asm
-F2=-3,0,1,-10,-32,1445,757,0,RunDLLx86_Shim.inc
-Open=4,6,19,27,29,31,1,7,28,25,26
+F1=-2,2,1,-10,-32,1445,757,5,RunDLLx86_Shim.asm
+F2=-3,0,1,-6,-25,1688,1148,0,RunDLLx86_Shim.inc
+Open=4,19,27,29,31,1,7,28,6,25,26
 Api=
 C1=0
 B1=
 M1=
 F3=-3,0,1,-6,-25,1496,754,0,File_Loader.inc
-F4=-3,0,1,-6,-25,1493,761,0,File_Header.inc
+F4=-3,0,1,-6,-25,1726,1089,0,File_Header.inc
 C4=0
 B4=
 M4=
@@ -66,7 +130,7 @@ M9=
 C13=0
 B13=
 M13=
-F16=-3,0,2,-6,-25,1476,754,0,x32dbg_cpp_type_headers\PEHeader.h
+F16=-3,0,2,-6,-25,1726,1089,0,x32dbg_cpp_type_headers\PEHeader.h
 C16=
 B16=
 M16=
@@ -78,7 +142,7 @@ F20=-3,0,2,-6,-25,1499,808,18,Documentation\Using x64dbg struct headers.txt
 C20=
 B20=
 M20=
-F18=-3,0,1,-6,-25,1499,808,18,Globals.inc
+F18=-3,0,1,-6,-25,1688,1148,18,Globals.inc
 C18=0
 B18=
 M18=
@@ -99,7 +163,7 @@ C24=
 B24=
 M24=
 F23=-3,0,2,-6,-25,1496,754,41,Documentation\StrMap_Doc.txt
-F25=-3,0,1,-6,-25,1496,754,3,OS\Windows\File\File_Util.inc
+F25=-3,0,1,-6,-25,1726,1089,3,OS\Windows\File\File_Util.inc
 F26=-3,0,1,-6,-25,1496,754,12,OS\Windows\FileManager\Get\FileManager_Get.inc
 C26=0
 B26=
@@ -114,7 +178,7 @@ F29=-3,0,1,-6,-25,1496,754,65,OS\Windows\FileManager\Set\FileManager_Set.inc
 C29=0
 B29=
 M29=
-F30=-3,0,1,-6,-25,1496,754,0,OS\Windows\FileSystem_Util.inc
+F30=-3,0,1,-6,-25,1688,1148,0,OS\Windows\FileSystem_Util.inc
 C30=0
 B30=
 M30=
@@ -122,7 +186,7 @@ F32=-3,0,1,-6,-25,1496,754,3,OS\Windows\FileSystem.inc
 C32=0
 B32=
 M32=
-F31=-3,0,1,-6,-25,1496,754,142,OS\Windows\FileManager\FileManager_Util.inc
+F31=-3,0,1,-6,-25,1496,754,109,OS\Windows\FileManager\FileManager_Util.inc
 C31=0
 B31=
 M31=
@@ -130,7 +194,7 @@ F27=-3,0,1,-6,-25,1496,754,83,OS\Windows\File\Set\File_Set.inc
 C27=0
 B27=
 M27=
-F28=-3,0,1,-6,-25,1496,754,62,OS\Windows\File\Get\File_Get.inc
+F28=-3,0,1,-6,-25,1688,1148,62,OS\Windows\File\Get\File_Get.inc
 C28=0
 B28=
 M28=
@@ -142,7 +206,7 @@ F33=-3,0,2,-6,-25,1476,754,4,x32dbg_cpp_type_headers\File.h
 C33=
 B33=
 M33=
-F35=-3,0,1,-6,-25,1496,754,0,..\..\INCLUDE\WIN32A.INC
+F35=
 C35=
 B35=
 M35=
@@ -150,9 +214,21 @@ F36=-3,0,2,-6,-25,1476,754,11,x32dbg_cpp_type_headers\FileSystem.h
 C36=
 B36=
 M36=
-[Make]
-Make=0
-0=Window no link,'/r "$R"',"$R.res",'"$C"',"$C.exe",'',,'',
-Delete=0
-IncBuild=0
-Run=0,'',''
+[Help]
+0=Win32 Api,$A\Help\WIN32.HLP
+1=Fasm,$A\Help\Fasm.pdf
+2=RadASM,$A\Help\RadASM.chm
+[Tool]
+0=Notepad,Notepad.exe
+1=Calculator,Calc.exe
+2=Paint,mspaint.exe
+3=-,
+4=Command line,cmd /k
+5=Explore current path,
+6=-,
+[External]
+0=.bmp.ico.,mspaint.exe
+[HelpF1]
+0=Fasm,$A\Help\Fasm.pdf
+1=RC,$A\help\Resource.htm
+2=Api,$A\help\WIN32.HLP

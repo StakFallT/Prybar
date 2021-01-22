@@ -1,1 +1,1 @@
-..\..\FASM.EXE .\RunDLLx86_Shim.asm
+..\Fasm\FASM.EXE .\RunDLLx86_Shim.asm

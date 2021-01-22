@@ -154,35 +154,35 @@ proc Store_PE_Header_MemberAddrs 	ByteBuffer:DWORD, PE_Header_StartAddress:DWORD
         mov edi, [eax]		; Contents of the memory address stored in PE_Header_Storage's memory address
 
 
-        add esi, 4			;Skip the PE0x000x00 bytes
-        add edi, 4          		;Skip storing the Magic Header
+        ;add esi, 4			;Skip the PE0x00x00 bytes
+        ;add edi, 4          		;Skip storing the Magic Header
 
 
-        mov [edi], esi      ;mMachine
+        mov [edi], esi      ;ptr to mMachine
         add esi, 2
         add edi, 4
 
-        mov [edi], esi      ;mNumberOfSections
+        mov [edi], esi      ;ptr to mNumberOfSections
         add esi, 2
         add edi, 4
 
-        mov [edi], esi      ;mTimeDateStamp
+        mov [edi], esi      ;ptr to mTimeDateStamp
         add esi, 4
         add edi, 4
 
-        mov [edi], esi      ;mPointerToSymbolTable
+        mov [edi], esi      ;ptr to mPointerToSymbolTable
         add esi, 4
         add edi, 4
 
-        mov [edi], esi      ;mNumberOfSymbols
+        mov [edi], esi      ;ptr to mNumberOfSymbols
         add esi, 4
         add edi, 4
 
-        mov [edi], esi      ;mSizeOfOptionalHeader
+        mov [edi], esi      ;ptr to mSizeOfOptionalHeader
         add esi, 2
         add edi, 4
 
-        mov [edi], esi      ;mCharacteristics
+        mov [edi], esi      ;ptr to mCharacteristics
         add esi, 2
         add edi, 4
 
@@ -490,45 +490,82 @@ proc Read_PE_Header_Optional 	PE_Header_StartAddress:DWORD, PE_Header_Storage:DW
 		movsw
          ;sub esi, 2
 
-	xor eax, eax
-	;	lodsd
-		;stosd       ;mSizeOfStackReserve			dd
-		lea ecx, [PE32OptionalHeader.mSizeOfStackReserve]
-        mov ebx, [edx]
-		add ebx, ecx
-		mov edi, ebx
-		movsd
-         ;sub esi, 4
 
-	xor eax, eax
-	;	lodsd
-		;stosd       ;mSizeOfStackCommit			    dd
-		lea ecx, [PE32OptionalHeader.mSizeOfStackCommit]
-        mov ebx, [edx]
-		add ebx, ecx
-		mov edi, ebx
-		movsd
-         ;sub esi, 4
 
-	xor eax, eax
-	;	lodsd
-		;stosd       ;mSizeOfHeapReserve			    dd
-		lea ecx, [PE32OptionalHeader.mSizeOfHeapReserve]
-        mov ebx, [edx]
-		add ebx, ecx
-		mov edi, ebx
-		movsd
-         ;sub esi, 4
+        ; If the magic code for the optional PE header is 0x010B, it is PE32
+        ; If the magic code for the optional PE header is 0x020B, it is PE64
+        ; If the magic code for the optional PE header is 0x0107, it is ROM
+        lea ecx, [ebx - PE32OptionalHeader.mDllCharacteristics]
+        push esi
+        push edi
+            xor esi, esi
+            xor edi, edi
+            mov esi, ecx
+            lodsw
+        pop edi
+        pop esi
+        ;cmp eax, 010Bh
+        ;je Next4PE_OptMembers_DWORD
+        cmp eax, 020Bh
+        je Next4PE_OptMembers_QWORD
+        ;cmp eax, 0107h
+        ;je Next4PE_OptMembers_ROM
 
-	xor eax, eax
-	;	lodsd
-		;stosd       ;mSizeOfHeapCommit			    dd
-		lea ecx, [PE32OptionalHeader.mSizeOfHeapCommit]
-        mov ebx, [edx]
-		add ebx, ecx
-		mov edi, ebx
-		movsd
-         ;sub esi, 4
+        Next4PE_OptMembers_QWORD:
+		xor eax, eax
+		;	lodsd
+			;stosd       ;mSizeOfStackReserve			dd
+			lea ecx, [PE32OptionalHeader.mSizeOfStackReserve]
+	        mov ebx, [edx]
+			add ebx, ecx
+			mov edi, ebx
+			lodsd
+			movsd
+			mov [edi], eax
+			xor eax, eax
+	         ;sub esi, 4
+	
+		xor eax, eax
+		;	lodsd
+			;stosd       ;mSizeOfStackCommit			    dd
+			lea ecx, [PE32OptionalHeader.mSizeOfStackCommit]
+	        mov ebx, [edx]
+			add ebx, ecx
+			mov edi, ebx
+			lodsd
+			movsd
+			mov [edi], eax
+			xor eax, eax
+	         ;sub esi, 4
+	
+		xor eax, eax
+		;	lodsd
+			;stosd       ;mSizeOfHeapReserve			    dd
+			lea ecx, [PE32OptionalHeader.mSizeOfHeapReserve]
+	        mov ebx, [edx]
+			add ebx, ecx
+			mov edi, ebx
+			lodsd
+			movsd
+			mov [edi], eax
+			xor eax, eax
+	         ;sub esi, 4
+
+		xor eax, eax
+		;	lodsd
+			;stosd       ;mSizeOfHeapCommit			    dd
+			lea ecx, [PE32OptionalHeader.mSizeOfHeapCommit]
+	        mov ebx, [edx]
+			add ebx, ecx
+			mov edi, ebx
+			lodsd
+			movsd
+			mov [edi], eax
+			xor eax, eax
+	         ;sub esi, 4
+
+
+
 
 	; There appears to be 4 dwords worth of bytes that PEBrowse does not show but instead "skips". This is confirmed
 	; when watching the esi register and looking at the bytes that are left to read in when compared to the values PEBrowse

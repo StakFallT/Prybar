@@ -8,22 +8,22 @@ entry DllEntryPoint
 include 'f:\fasm\include\win32a.inc'
 ;include 'f:\fasm\include\win32ax.inc'
 
-include 'F:\Fasm\Projects\RunDLLx86_Shim\Globals.inc'
+include 'Globals.inc'
 
-include 'F:\Fasm\Projects\RunDLLx86_Shim\StrLibrary.inc'
+include 'StrLibrary.inc'
 
-include 'F:\Fasm\Projects\RunDLLx86_Shim\Containers\Map\StrMap.inc'
+include 'Containers\Map\StrMap.inc'
 
-include 'F:\Fasm\Projects\RunDLLx86_Shim\File_Header.inc'
-include 'F:\Fasm\Projects\RunDLLx86_Shim\File_Loader.inc'
+include 'File_Header.inc'
+include 'File_Loader.inc'
 
 
 ; Includes a procedure that just runs through a bunch of the StrMap functions to demonstrate their usage and test their functionality.
-include 'F:\Fasm\Projects\RunDLLx86_Shim\Containers\Map\StrMap_Tests.inc'
+include 'Containers\Map\StrMap_Tests.inc'
 
-include 'F:\\Fasm\Projects\RunDLLx86_Shim\OS\Windows\FileSystem.inc'
-;include 'F:\Fasm\Projects\RunDLLx86_Shim\OS\Windows\FileManager\File.inc'
-;include 'F:\Fasm\Projects\RunDLLx86_Shim\OS\Windows\FileManager\FileManager.inc'
+include 'OS\Windows\FileSystem.inc'
+;include 'f:\Fasm\Projects\PryBar\OS\Windows\FileManager\File.inc'
+;include 'f:\Fasm\Projects\PryBar\OS\Windows\FileManager\FileManager.inc'
 
 ;-----------------------------------------------------------------------------
 ; Initialized data
@@ -32,8 +32,9 @@ section '.data' data readable writeable executable
 align 16
 
     ;Payload_File    db	'c:\\windows\\system32\\cmd.exe',0
-    ;Payload_File    db	'f:\\fasm\\projects\\rundllx86_shim\\cmd_x86.exe',0
-    Payload_File    db	'cmd_x86.exe',0
+    ;Payload_File    db	'c:\\fasm\\projects\\rundllx86_shim\\cmd_x86.exe',0
+    ;Payload_File    db	'cmd_x86.exe',0
+    Payload_File    db      'c:\\temp\\cmd_x86.exe',0
 
 	Test_UID		db	'Unique IDentifier',0
 	Test_Path		db	'c:\\temp\\',0
@@ -224,6 +225,11 @@ local   StrMap:DWORD
 			stdcall FileManager_Decrease_FileOpen_Count, eax
 		pop eax
 
+
+
+
+
+
 		;push Test_Filename
 		;push Test_Path
 		;push Test_UID
@@ -231,7 +237,6 @@ local   StrMap:DWORD
 		;call FileManager_Open_File
 		;stdcall FileManager_Open_File, eax, Test_UID, Test_Path, Test_Filename
 		stdcall FileManager_Open_File, [FileManager_Obj], Test_UID, Test_Path, Test_Filename 
-
 
     ; Allocate memory from the heap
     ;   Flags: Generate Exceptions, and Zero Memory
@@ -284,6 +289,7 @@ local   StrMap:DWORD
 		    	push edx
 		    	    xor edx, edx
 		    	    mov edx, [ecx]
+		    	    ;mov edx, ecx
 		    	    ;add edx, [EntryPoint_Offset]       ; May or may not be needed.
 		    	;jmp edx
 		    	;pop edx
@@ -336,7 +342,11 @@ local   StrMap:DWORD
             ;push ecx
             ;push ebx
             ;call Store_PE_Header_MemberAddrs
-		stdcall Store_PE_Header_MemberAddrs, ebx, ecx, edx
+            push edx
+	            mov edx, [ecx]
+	            mov ecx, edx
+            pop edx
+		stdcall Store_PE_Header_MemberAddrs, ebx, ecx, edx              ; This will store the PE Header MemberAddrs into a ptrPEHeader style struct found in PEHeader.h
         pop edx
         pop ecx
         pop ebx
@@ -374,8 +384,24 @@ local   StrMap:DWORD
 
             push ebx
                 xor ebx, ebx
-                mov ebx, [ecx]
-                cmp ebx, 0
+                ;mov ebx, [ecx]
+                ;mov bx, [cx]
+                ;cmp ebx, 0
+                ;cmp bx, 0
+                push esi
+                push edi
+                    xor esi, esi
+                    xor edi, edi
+                    mov esi, ecx
+                    ;mov ed
+                    lodsb
+                    mov bl, al
+                    lodsb
+                    mov bh, al
+                pop edi
+                pop esi
+
+            cmp ebx, 0
             jg lblRead_PE_Optional_Header
             ;jmp lblNo_PE_Section_Header			; Might need to be renamed
             jmp lblAllocate_Directory_Entries
@@ -813,6 +839,7 @@ section '.edata' export data readable
 	StrMap_SetInitial,'StrMap_SetInitial',\
     Read_PE_Header,'Read_PE_Header',\
     Read_PE_Header_Optional,'Read_PE_Header_Optional',\
+        Next4PE_OptMembers_QWORD,'Next4PE_OptMembers_QWORD',\
     Read_PE_Header_Directory,'Read_PE_Header_Directory',\
     Read_PE_Header_Section,'Read_PE_Header_Section',\
     Store_PE_Header_MemberAddrs,'Store_PE_Header_MemberAddrs',\

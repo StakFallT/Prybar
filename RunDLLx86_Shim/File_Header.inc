@@ -55,10 +55,14 @@ struct PE32OptionalHeader
 	mCheckSum					    dd	?
 	mSubsystem					    dw	?
 	mDllCharacteristics				dw	?
-	mSizeOfStackReserve			    dd	?
-	mSizeOfStackCommit			    dd	?
-	mSizeOfHeapReserve			    dd	?
-	mSizeOfHeapCommit			    dd	?
+
+        ; So that this struct works for both 32-bit and 64-bit compiled executables, these next
+        ; 4 members are declared as QWORDS
+		mSizeOfStackReserve			    dq	?
+		mSizeOfStackCommit			    dq	?
+		mSizeOfHeapReserve			    dq	?
+		mSizeOfHeapCommit			    dq	?
+
 	mLoaderFlags					dd	?
 	mNumberOfRvaAndSizes			dd	?
 ends

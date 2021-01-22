@@ -6,30 +6,31 @@ typedef uint32_t DWORD;
 	typedef uint32_t IMAGE_IMPORT_BY_NAME;
 	typedef uint32_t IMAGE_THUNK_DATA;
 
-struct PEHeader
-{
-	DWORD 		*mMagic;						 // PE\0\0 or 0x00004550
-	WORD 		mMachine;
-	WORD 		mNumberOfSections;
-	DWORD 		*mTimeDateStamp;
-	DWORD 		*mPointerToSymbolTable;
-	DWORD 		*mNumberOfSymbols;
-	WORD 		mSizeOfOptionalHeader;
-	WORD 		mCharacteristics;
-};
-
-// Contains pointers to where those members would be
-struct ptrPEHeader
-{
-    	DWORD *ptrMagic;
-    	DWORD *ptrMachine;
-	DWORD *ptrNumberOfSections;
-	DWORD *ptrTimeDateStamp;
-	DWORD *ptrPointerToSymbolTable;
-	DWORD *ptrNumberOfSymbols;
-	DWORD *ptrSizeOfOptionalHeader;
-	DWORD *ptrCharacteristics;
-};
+// This would be the _IMAGE_FILE_HEADER struct found in the OpenRCE.org PE File Format Image
+	struct PEHeader
+	{
+		DWORD 		*mMagic;						 // PE\0\0 or 0x00004550
+		WORD 		mMachine;
+		WORD 		mNumberOfSections;
+		DWORD 		*mTimeDateStamp;
+		DWORD 		*mPointerToSymbolTable;
+		DWORD 		*mNumberOfSymbols;
+		WORD 		mSizeOfOptionalHeader;
+		WORD 		mCharacteristics;
+	};
+	
+	// Contains pointers to where those members would be
+	struct ptrPEHeader
+	{
+	    	DWORD *ptrMagic;
+	    	DWORD *ptrMachine;
+		DWORD *ptrNumberOfSections;
+		DWORD *ptrTimeDateStamp;
+		DWORD *ptrPointerToSymbolTable;
+		DWORD *ptrNumberOfSymbols;
+		DWORD *ptrSizeOfOptionalHeader;
+		DWORD *ptrCharacteristics;
+	};
 
 
 
@@ -60,10 +61,20 @@ struct PE32OptionalHeader
 	DWORD *mCheckSum;
 	WORD mSubsystem;
 	WORD mDllCharacteristics;
-	DWORD *mSizeOfStackReserve;
-	DWORD *mSizeOfStackCommit;
-	DWORD *mSizeOfHeapReserve;
-	DWORD *mSizeOfHeapCommit;
+	//DWORD *mSizeOfStackReserve;
+	//DWORD *mSizeOfStackCommit;
+	//DWORD *mSizeOfHeapReserve;
+	//DWORD *mSizeOfHeapCommit;
+
+	QWORD mSizeOfStackReserve_0;
+	QWORD mSizeOfStackReserve;
+	QWORD mSizeOfStackCommit_0;
+	QWORD mSizeOfStackCommit;
+	QWORD mSizeOfHeapReserve_0;
+	QWORD mSizeOfHeapReserve;
+	QWORD mSizeOfHeapCommit_0;
+	QWORD mSizeOfHeapCommit;
+
 	DWORD *mLoaderFlags;
 	DWORD *mNumberOfRvaAndSizes;
 };
